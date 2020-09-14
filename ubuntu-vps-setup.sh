@@ -348,11 +348,13 @@ echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> /etc/profile
 export GOPATH=$HOME/go
 export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin
 
+## Optional Either Cloudflare DNS-over-TLS or DNSCrypt-Proxy
 cd /opt
 git clone https://github.com/DNSCrypt/dnscrypt-proxy.git
 mkdir /etc/dnscrypt-proxy/
 cp /opt/dnscrypt-proxy/dnscrypt-proxy/example-dnscrypt-proxy.toml /etc/dnscrypt-proxy/dnscrypt-proxy.toml
 cp -r /opt/dnscrypt-proxy/utils/generate-domains-blocklists/ /etc/dnscrypt-proxy/utils
+
 
 # Setting up USBGuard
 usbguard generate-policy > /tmp/rules.conf
@@ -426,6 +428,9 @@ mkdir -p /etc/docker/ssl
 mkdir -p /etc/docker/certs.d/peer
 mkdir -p /etc/docker/certs.d/client
 echo 'GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"' >> /etc/default/grub
+echo 'export DOCKER_HOST=tcp://172.22.1.1:2376' >> /etc/profile
+echo 'export DOCKER_TLS_VERIFY=1' >> /etc/profile
+echo 'export DOCKER_CERT_PATH=$HOME/.docker/' >> /etc/profile
 # CFSSL Setup for mTLS on Docker Socket
 mkdir -p /etc/cfssl/cacert
 cat > /etc/cfssl/cacert/config.json <<EOF
@@ -607,3 +612,6 @@ systemctl enable apparmor
 systemctl enable haveged
 systemctl enable docker
 systemctl enable unattended-upgrades
+update-grub
+update-ca-certificates
+
