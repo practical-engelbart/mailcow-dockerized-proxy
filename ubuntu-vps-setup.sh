@@ -570,7 +570,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=client 
 mkdir -p /root/.docker
 cp /etc/cfssl/cacert/ca.pem /usr/local/share/ca-certicates/ca.crt
 cp /etc/cfssl/cacert/ca.pem /root/.docker/ca.pem
-cp /etc/cfssl/cacert/client.pm /root/.docker/cert.pem
+cp /etc/cfssl/cacert/client.pem /root/.docker/cert.pem
 cp /etc/cfssl/cacert/client-key.pem /root/.docker/key.pem
 cp /etc/cfssl/cacert/server.pem /etc/docker/ssl/server.pem
 cp /etc/cfssl/cacert/server-key.pem /etc/docker/ssl/server-key.pem
@@ -590,6 +590,10 @@ chmod 700 /etc/docker/certs.d/
 chmod 600 /etc/docker/certs.d/peer/key.pem
 chmod 600 /etc/docker/certs.d/client/key.pem
 chmod 600 /etc/ssl/private/
+
+curl -L "https://github.com/docker/compose/releases/download/1.27.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 cat > /etc/systemd/system/docker.service.d/override.conf <<EOF
 [Unit]
