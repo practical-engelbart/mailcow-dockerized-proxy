@@ -1,6 +1,45 @@
 server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-        server_name _;
+    listen 80;
+    listen [::]:80;
+    server_name example.com www.example.com mail.example.com autodiscover.* autoconfig.*;
+    
+    if ($host = autoconfig.example.com) {
         return 301 https://$host$request_uri;
+    }
+
+    if ($host = autodiscover.example.com) {
+        return 301 https://$host$request_uri;
+    }
+
+    if ($host = mail.example.com) {
+        return 301 https://$host$request_uri;
+    } 
+
+    if ($host = www.example.com) {
+        return 301 https://$host$request_uri;
+    }
+
+    if ($host = example.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+    return 404; 
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl ipv6only=on;
+    server_name example.com www.example.com mail.example.com autodiscover.example.com autoconfig.example.com;
+    
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    
+    include /etc/nginx/snippets/ssl.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    
+    return 301 https://$host$request_uri;
 }
