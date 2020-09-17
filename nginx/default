@@ -21,7 +21,7 @@ server {
 
     if ($host = example.com) {
         return 301 https://$host$request_uri;
-    } # managed by Certbot
+    } # Edit the cli.ini in /etc/letsencrypt/ directory to add security enchancements
 
     return 404; 
 }
