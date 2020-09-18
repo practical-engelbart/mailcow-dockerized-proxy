@@ -29,7 +29,7 @@ server {
 server {
     listen 443 ssl;
     listen [::]:443 ssl ipv6only=on;
-    server_name example.com www.example.com mail.example.com autodiscover.example.com autoconfig.example.com;
+    server_name www.example.com;
     
     ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
@@ -41,5 +41,26 @@ server {
     ssl_stapling on;
     ssl_stapling_verify on;
     
-    return 301 https://$host$request_uri;
-}
+    return 301 https://example.com$request_uri;
+ }
+ 
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl ipv6only=on;
+    server_name example.com;
+    
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    
+    include /etc/nginx/snippets/ssl.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem
+    include /etc/nginx/snippets/stapling.conf;
+    
+    include /etc/nginx/snippets/security.conf;
+    
+    root /var/www/example.com/public;
+    index index.html index.htm;
+
+ }
