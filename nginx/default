@@ -37,9 +37,8 @@ server {
     include /etc/nginx/snippets/ssl.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem
-    ssl_stapling on;
-    ssl_stapling_verify on;
+    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem;
+    include /etc/nginx/snippets/stapling.conf;
     
     return 301 https://example.com$request_uri;
  }
@@ -55,7 +54,7 @@ server {
     include /etc/nginx/snippets/ssl.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem
+    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem;
     include /etc/nginx/snippets/stapling.conf;
     
     include /etc/nginx/snippets/security.conf;
