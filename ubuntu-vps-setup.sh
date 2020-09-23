@@ -34,6 +34,11 @@ kernel.perf_event_paranoid = 2
 kernel.randomize_va_space = 2
 kernel.sysrq = 0
 kernel.yama.ptrace_scope = 2
+net.ipv4.conf.wg0.forwarding = 1
+net.ipv4.conf.wg0.accept_source_route =1
+net.ipv4.conf.wg0.secure_redirects = 2
+net.ipv4.conf.wg0.send_redirects = 2
+net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.all.log_martians = 1
@@ -45,7 +50,7 @@ net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.default.log_martians = 1
 net.ipv4.conf.default.rp_filter= 1
 net.ipv4.conf.default.secure_redirects = 2
-net.ipv4.conf.default.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 2
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 net.ipv4.tcp_challenge_ack_limit = 1000000
@@ -57,18 +62,21 @@ net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_timestamps = 0
 net.ipv6.conf.all.accept_ra = 0
 net.ipv6.conf.all.accept_redirects = 0
-net.ipv6.conf.all.use_tempaddr = 2
-net.ipv6.conf.default.accept_ra = 2
+net.ipv6.conf.all.use_tempaddr = 1
+net.ipv6.conf.default.accept_ra = 0
 net.ipv6.conf.default.accept_ra_defrtr = 0
 net.ipv6.conf.default.accept_ra_pinfo = 0
 net.ipv6.conf.default.accept_redirects = 0
-net.ipv6.conf.default.accept_source_route = 2
-net.ipv6.conf.default.autoconf = 2
+net.ipv6.conf.default.accept_source_route = 0
+net.ipv6.conf.default.autoconf = 0
 net.ipv6.conf.default.dad_transmits = 0
 net.ipv6.conf.default.max_addresses = 1
 net.ipv6.conf.default.router_solicitations = 1
 net.ipv6.conf.default.use_tempaddr = 2
 net.ipv6.conf.ens3.accept_ra_rtr_pref = 2
+net.ipv6.conf.ens3.accept_ra = 2
+net.ipv6.conf.all.forwarding = 1
+net.ipv6.conf.default.forwarding = 1
 net.netfilter.nf_conntrack_max = 2000000
 net.netfilter.nf_conntrack_tcp_loose = 0
 vm.swappiness = 0
@@ -154,7 +162,7 @@ sudo apt-get install -y --allow-downgrades \
     po-debconf autoconf autopoint moreutils \
     libseccomp2 libenchant1c2a ninja-build \
     golang-cfssl ntp apparmor apparmor-profiles \
-    apparmor-utils auditd usbguard haveged \
+    apparmor-utils apparmor-easyprof auditd usbguard haveged \
     libpam-tmpdir libpam-apparmor libpam-cracklib \
     libpam-cgroup tree neofetch dbconfig-common \
     libnss3-tools conntrack iproute2 ipvsadm \
@@ -428,7 +436,7 @@ mkdir -p /etc/docker/ssl
 mkdir -p /etc/docker/certs.d/peer
 mkdir -p /etc/docker/certs.d/client
 echo 'GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"' >> /etc/default/grub
-echo 'export DOCKER_HOST=tcp://172.22.1.1:2376' >> /etc/profile
+echo 'export DOCKER_HOST=tcp://127.0.0.1:2376' >> /etc/profile
 echo 'export DOCKER_TLS_VERIFY=1' >> /etc/profile
 echo 'export DOCKER_CERT_PATH=$HOME/.docker/' >> /etc/profile
 # CFSSL Setup for mTLS on Docker Socket
@@ -496,8 +504,11 @@ cat > /etc/cfssl/cacert/server.json <<EOF
     "172.22.1.1",
     "fd4d:6169:6c63:6f77::1",
     "127.0.0.1",
+    "127.0.1.1",
     "::1",
-    "localhost"
+    "ip6-localhost",
+    "localhost",
+    "localhost.localdomain"
   ],
   "key": {
     "algo": "ecdsa",
@@ -544,8 +555,11 @@ cat > /etc/cfssl/cacert/peer.json <<EOF
     "172.22.1.1",
     "fd4d:6169:6c63:6f77::1",
     "127.0.0.1",
+    "127.0.1.1",
     "::1",
-    "localhost"
+    "ip6-localhost",
+    "localhost",
+    "localhost.localdomain"
   ],
   "key": {
     "algo": "ecdsa",
@@ -591,7 +605,7 @@ chmod 600 /etc/docker/certs.d/peer/key.pem
 chmod 600 /etc/docker/certs.d/client/key.pem
 chmod 600 /etc/ssl/private/
 
-curl -L "https://github.com/docker/compose/releases/download/1.27.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.27.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
@@ -602,7 +616,7 @@ Documentation=http://docs.docker.io
 
 [Service]
 ExecStart=
-ExecStart=/usr/bin/dockerd -H tcp://127.0.0.1:2376 --tlsverify --tlscacert /etc/docker/ssl/ca.pem --tlscert /etc/docker/ssl/server.pem --tlskey /etc/docker/ssl/server-key.pem -H unix:///var/run/docker.sock
+ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2376 --tlsverify --tlscacert /etc/docker/ssl/ca.pem --tlscert /etc/docker/ssl/server.pem --tlskey /etc/docker/ssl/server-key.pem -H unix:///var/run/docker.sock
  
 Restart=on-failure
 RestartSec=5
