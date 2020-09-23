@@ -1,7 +1,10 @@
 server {
-    listen 80;
-    listen [::]:80;
-    server_name example.com www.example.com mail.example.com autodiscover.* autoconfig.*;
+    listen 80 default_server;
+    listen [::]:80 default_sever;
+    server_name _;
+    
+    root /var/www/html/public;
+    include /etc/nginx/snippets/letsencrpt.conf;
     
     if ($host = autoconfig.example.com) {
         return 301 https://$host$request_uri;
@@ -59,7 +62,7 @@ server {
     
     include /etc/nginx/snippets/security.conf;
     
-    root /var/www/example.com/public;
+    root /var/www/html/public;
     index index.html index.htm;
 
  }
