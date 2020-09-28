@@ -582,7 +582,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=server 
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=peer peer.json | cfssljson -bare peer
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=client client.json | cfssljson -bare client
 mkdir -p /root/.docker
-cp /etc/cfssl/cacert/ca.pem /usr/local/share/ca-certicates/ca.crt
+cp /etc/cfssl/cacert/ca.pem /usr/local/share/ca-certicates/ca.pem
 cp /etc/cfssl/cacert/ca.pem /root/.docker/ca.pem
 cp /etc/cfssl/cacert/client.pem /root/.docker/cert.pem
 cp /etc/cfssl/cacert/client-key.pem /root/.docker/key.pem
