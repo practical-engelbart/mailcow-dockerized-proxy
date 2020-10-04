@@ -520,7 +520,7 @@ cat > /etc/cfssl/cacert/server.json <<EOF
       "L": "CA",
       "O": "Mailcow Host",
       "ST": "Los Angeles",
-      "OU": "Docker Server"
+      "OU": "Server"
     }
   ]
 }
@@ -582,7 +582,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=server 
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=peer peer.json | cfssljson -bare peer
 cfssl gencert -ca=ca.pem -ca-key=ca-key.pem -config=config.json -profile=client client.json | cfssljson -bare client
 mkdir -p /root/.docker
-cp /etc/cfssl/cacert/ca.pem /usr/local/share/ca-certicates/ca.pem
+cp /etc/cfssl/cacert/ca.pem /usr/local/share/ca-certificates/ca.pem
 cp /etc/cfssl/cacert/ca.pem /root/.docker/ca.pem
 cp /etc/cfssl/cacert/client.pem /root/.docker/cert.pem
 cp /etc/cfssl/cacert/client-key.pem /root/.docker/key.pem
@@ -597,6 +597,7 @@ mv /etc/cfssl/cacert/peer.pem /etc/docker/certs.d/peer/cert.pem
 mv /etc/cfssl/cacert/peer-key.pem /etc/docker/certs.d/peer/key.pem
 mv /etc/cfssl/cacert/ca.pem /etc/ssl/certs/ca.pem
 mv /etc/cfssl/cacert/ca-key.pem /etc/ssl/private/ca-key.pem
+mv /usr/local/share/ca-certificates/ca.pem /usr/local/share/ca-certificates/dockerCA.crt
 chmod 600 /root/.docker/
 chmod 700 /etc/docker/ssl/
 chmod 600 /etc/docker/ssl/server-key.pem
