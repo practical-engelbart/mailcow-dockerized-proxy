@@ -35,10 +35,9 @@ kernel.randomize_va_space = 2
 kernel.sysrq = 0
 kernel.yama.ptrace_scope = 2
 net.ipv4.conf.wg0.forwarding = 1
-net.ipv4.conf.wg0.accept_source_route =1
-net.ipv4.conf.wg0.secure_redirects = 2
-net.ipv4.conf.wg0.send_redirects = 2
-net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.wg0.accept_source_route = 1
+net.ipv4.conf.wg0.secure_redirects = 1
+net.ipv4.conf.wg0.send_redirects = 0
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.all.log_martians = 1
@@ -49,8 +48,8 @@ net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.default.log_martians = 1
 net.ipv4.conf.default.rp_filter= 1
-net.ipv4.conf.default.secure_redirects = 2
-net.ipv4.conf.default.send_redirects = 2
+net.ipv4.conf.default.secure_redirects = 1
+net.ipv4.conf.default.send_redirects = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 net.ipv4.tcp_challenge_ack_limit = 1000000
@@ -68,7 +67,7 @@ net.ipv6.conf.default.accept_ra_defrtr = 0
 net.ipv6.conf.default.accept_ra_pinfo = 0
 net.ipv6.conf.default.accept_redirects = 0
 net.ipv6.conf.default.accept_source_route = 0
-net.ipv6.conf.default.autoconf = 0
+net.ipv6.conf.default.autoconf = 1
 net.ipv6.conf.default.dad_transmits = 0
 net.ipv6.conf.default.max_addresses = 1
 net.ipv6.conf.default.router_solicitations = 1
@@ -168,7 +167,7 @@ sudo apt-get install -y --allow-downgrades \
     libnss3-tools conntrack iproute2 ipvsadm \
     iputils-arping iputils-clockdiff iputils-ping \
     iputils-tracepath iproute2 traceroute tcptraceroute \
-    gnupg2
+    gnupg2 net-tools
     
 # Setup Auditd Rules    
 cat <<-EOF > /etc/audit/rules.d/docker.rules
@@ -480,7 +479,7 @@ cat > /etc/cfssl/cacert/config.json <<EOF
 EOF
 cat > /etc/cfssl/cacert/ca-csr.json <<EOF
 {
-  "CN": "Mailcow Internal CA",
+  "CN": "Docker Internal CA",
   "key": {
     "algo": "ecdsa",
     "size": 521
@@ -489,9 +488,9 @@ cat > /etc/cfssl/cacert/ca-csr.json <<EOF
     {
       "C": "US",
       "L": "CA",
-      "O": "Mailcow Host",
+      "O": "Docker Host",
       "ST": "Los Angeles",
-      "OU": "Mailcow Internal CA"
+      "OU": "Docker Internal CA"
     }
   ]
 }
@@ -518,7 +517,7 @@ cat > /etc/cfssl/cacert/server.json <<EOF
     {
       "C": "US",
       "L": "CA",
-      "O": "Mailcow Host",
+      "O": "Docker Host",
       "ST": "Los Angeles",
       "OU": "Server"
     }
@@ -539,7 +538,7 @@ cat > /etc/cfssl/cacert/client.json <<EOF
     {
       "C": "US",
       "L": "CA",
-      "O": "Mailcow Host",
+      "O": "Docker Host",
       "ST": "Los Angeles",
       "OU": "Client"
 
@@ -569,7 +568,7 @@ cat > /etc/cfssl/cacert/peer.json <<EOF
     {
       "C": "US",
       "L": "CA",
-      "O": "Mailcow Host",
+      "O": "Docker Host",
       "ST": "Los Angeles",
       "OU": "Peer"
     }
@@ -606,7 +605,7 @@ chmod 600 /etc/docker/certs.d/peer/key.pem
 chmod 600 /etc/docker/certs.d/client/key.pem
 chmod 600 /etc/ssl/private/
 
-curl -L "https://github.com/docker/compose/releases/download/1.27.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
