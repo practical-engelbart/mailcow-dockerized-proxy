@@ -344,11 +344,13 @@ nf_conntrack
 iptable_nat
 iptable_filter
 iptable_mangle
+xt_nat
+nf_nat
 EOF
 
 cd /tmp
-wget https://dl.google.com/go/go1.15.2.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.15.2.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.15.5.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.15.5.linux-amd64.tar.gz
 echo 'export GOPATH=$HOME/go' >> /etc/profile
 echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> /etc/profile
 
