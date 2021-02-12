@@ -1,0 +1,37 @@
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name _;
+    root /dev/null;
+
+    if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
+         return 444;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl default_server;
+    listen [::]:443 ssl default_server;
+    server_name _;
+    root /dev/null;
+
+    ssl_certificate /etc/letsencrypt/live/email.thelyoncompany.com/fullchain.pem;  
+    ssl_certificate_key /etc/letsencrypt/live/email.thelyoncompany.com/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/email.thelyoncompany.com/chain.pem;  
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
+         return 444;
+    }
+
+    include /etc/nginx/snippets/letsencrypt.conf;
+
+    location / {
+         return 301 https://$host$request_uri;
+    }
+}
+
