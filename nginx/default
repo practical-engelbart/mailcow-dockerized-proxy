@@ -14,7 +14,6 @@ server {
         add_header X-Content-Type-Options nosniff;
         add_header X-XSS-Protection "1; mode=block";
         add_header Referrer-Policy "no-referrer-when-downgrade";
-
     }
 }
 
@@ -28,7 +27,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/email.thelyoncompany.com/privkey.pem;
     ssl_trusted_certificate /etc/letsencrypt/live/email.thelyoncompany.com/chain.pem;  
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-    include /etc/nginx/snippets/letsencrypt.conf;
+    include /etc/nginx/snippets/ssl.conf;
     
     if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
          return 444;
@@ -42,7 +41,6 @@ server {
          add_header X-Content-Type-Options nosniff;
          add_header X-XSS-Protection "1; mode=block";
          add_header Referrer-Policy "no-referrer-when-downgrade";
-
     }
 }
 
