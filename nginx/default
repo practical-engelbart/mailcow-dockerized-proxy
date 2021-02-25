@@ -29,6 +29,8 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
     include /etc/nginx/snippets/ssl.conf;
     
+    add_header Strict-Transport-Security "max-age=31536000";
+    
     if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
          return 444;
     }
