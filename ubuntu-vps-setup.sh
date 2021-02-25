@@ -362,8 +362,9 @@ cd /opt
 git clone https://github.com/DNSCrypt/dnscrypt-proxy.git
 mkdir /etc/dnscrypt-proxy/
 cp /opt/dnscrypt-proxy/dnscrypt-proxy/example-dnscrypt-proxy.toml /etc/dnscrypt-proxy/dnscrypt-proxy.toml
-cp -r /opt/dnscrypt-proxy/utils/generate-domains-blocklists/ /etc/dnscrypt-proxy/utils
-
+cp -r /opt/dnscrypt-proxy/utils/ /etc/dnscrypt-proxy/utils
+cd /opt/dnscrypt-proxy/dnscrypt-proxy
+go install
 
 # Setting up USBGuard
 usbguard generate-policy > /tmp/rules.conf
