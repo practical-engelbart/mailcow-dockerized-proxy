@@ -34,21 +34,18 @@ kernel.perf_event_paranoid = 2
 kernel.randomize_va_space = 2
 kernel.sysrq = 0
 kernel.yama.ptrace_scope = 2
-net.ipv4.conf.wg0.forwarding = 1
-net.ipv4.conf.wg0.accept_source_route = 1
-net.ipv4.conf.wg0.secure_redirects = 1
-net.ipv4.conf.wg0.send_redirects = 0
+net.ipv4.ip_forward = 1
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.all.log_martians = 1
 net.ipv4.conf.all.rp_filter = 1
-net.ipv4.conf.all.secure_redirects = 1
+net.ipv4.conf.all.secure_redirects = 0
 net.ipv4.conf.all.send_redirects = 0
 net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.default.log_martians = 1
 net.ipv4.conf.default.rp_filter= 1
-net.ipv4.conf.default.secure_redirects = 1
+net.ipv4.conf.default.secure_redirects = 0
 net.ipv4.conf.default.send_redirects = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
@@ -61,21 +58,22 @@ net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_timestamps = 0
 net.ipv6.conf.all.accept_ra = 0
 net.ipv6.conf.all.accept_redirects = 0
-net.ipv6.conf.all.use_tempaddr = 1
-net.ipv6.conf.default.accept_ra = 0
+net.ipv6.conf.all.use_tempaddr = 2
+net.ipv6.conf.all.forwarding = 1
+net.ipv6.conf.default.forwarding = 1
+net.ipv6.conf.default.accept_ra = 2
 net.ipv6.conf.default.accept_ra_defrtr = 0
 net.ipv6.conf.default.accept_ra_pinfo = 0
 net.ipv6.conf.default.accept_redirects = 0
 net.ipv6.conf.default.accept_source_route = 0
-net.ipv6.conf.default.autoconf = 1
+net.ipv6.conf.default.autoconf = 2
 net.ipv6.conf.default.dad_transmits = 0
 net.ipv6.conf.default.max_addresses = 1
 net.ipv6.conf.default.router_solicitations = 1
 net.ipv6.conf.default.use_tempaddr = 2
 net.ipv6.conf.ens3.accept_ra_rtr_pref = 2
-net.ipv6.conf.ens3.accept_ra = 2
-net.ipv6.conf.all.forwarding = 1
-net.ipv6.conf.default.forwarding = 1
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
 net.netfilter.nf_conntrack_max = 2000000
 net.netfilter.nf_conntrack_tcp_loose = 0
 vm.swappiness = 0
@@ -85,12 +83,6 @@ net.core.rmem_max = 16777216
 net.core.wmem_max = 16777216
 net.ipv4.tcp_rmem = 4096 87380 16777216
 net.ipv4.tcp_wmem = 4096 65536 16777216
-EOF
-
-cat <<-EOF > /etc/sysctl.d/10-bridge.conf
-net.bridge.bridge-nf-call-iptables = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-net.ipv4.ip_forward = 1
 EOF
 
 # Backup SSH_CONFIG
@@ -627,6 +619,19 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+
+## Update ssh_host keys
+rm /etc/ssh/ssh_host_*
+ssh-keygen -t ecdsa -b 521 -f /etc/ssh/ssh_host_ecdsa_key -N ""
+ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ""
+ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
+
+awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe
+mv /etc/ssh/moduli.safe /etc/ssh/moduli
+
+# GRUB enable swap and disable root recovery
+echo 'GRUB_CMDLINE_LINUX="cgroup_enable=memory swapaccount=1"' >> /etc/default/grub
+echo 'GRUB_DISABLE_RECOVERY="true"' >> /etc/default/grub
 
 systemctl enable auditd
 systemctl enable apparmor
