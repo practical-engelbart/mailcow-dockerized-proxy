@@ -4,15 +4,15 @@ server {
     server_name _;
     root /dev/null;
 
-    if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
+    if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|im.thelyoncompany.com|conference.im.thelyoncompany.com|proxy.im.thelyoncompany.com|pubsub.im.thelyoncompany.com|upload.im.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
          return 444;
     }
 
     location / {
-        return 301 https://$host$request_uri;
-        add_header X-Content-Type-Options nosniff;
-        add_header X-XSS-Protection "1; mode=block";
-        add_header Referrer-Policy "no-referrer-when-downgrade";
+         return 301 https://$host$request_uri;
+         add_header X-Content-Type-Options nosniff;
+         add_header X-XSS-Protection "1; mode=block";
+         add_header Referrer-Policy "no-referrer-when-downgrade";
     }
 }
 
@@ -26,16 +26,17 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/email.thelyoncompany.com/privkey.pem;
     ssl_trusted_certificate /etc/letsencrypt/live/email.thelyoncompany.com/chain.pem;  
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
     include /etc/nginx/snippets/ssl.conf;
-    
+
     add_header Strict-Transport-Security "max-age=31536000";
-    
-    if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
+
+    if ($host !~ ^(autoconfig.thelyoncompany.com|autodiscover.thelyoncompany.com|webmail.thelyoncompany.com|email.thelyoncompany.com|im.thelyoncompany.com|conference.im.thelyoncompany.com|proxy.im.thelyoncompany.com|pubsub.im.thelyoncompany.com|upload.im.thelyoncompany.com|matrix.thelyoncompany.com|thelyoncompany.com)$ ) {
          return 444;
     }
 
     include /etc/nginx/snippets/letsencrypt.conf;
-
+    
     location / {
          return 301 https://$host$request_uri;
          add_header X-Content-Type-Options nosniff;
@@ -43,4 +44,3 @@ server {
          add_header Referrer-Policy "no-referrer-when-downgrade";
     }
 }
-
