@@ -341,8 +341,8 @@ nf_nat
 EOF
 
 cd /tmp
-wget https://dl.google.com/go/go1.15.7.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.15.7.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.16.2.linux-amd64.tar.gz
 echo 'export GOPATH=$HOME/go' >> /etc/profile
 echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> /etc/profile
 
@@ -411,7 +411,7 @@ sh -c 'echo "kernel.randomize_va_space=0" > /etc/sysctl.d/67-randomize_va_space.
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 apt-get update && apt-get install -y apt-transport-https ca-certificates curl software-properties-common gnupg2
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-apt-get update && apt-get install -y containerd.io=1.2.13-2 docker-ce=5:19.03.11~3-0~ubuntu-$(lsb_release -cs) docker-ce-cli=5:19.03.11~3-0~ubuntu-$(lsb_release -cs)                                                                     
+apt-get update && apt-get install -y containerd.io docker-ce docker-ce-cli                                                                     
 
 cat > /etc/docker/daemon.json <<EOF
 {
@@ -420,6 +420,10 @@ cat > /etc/docker/daemon.json <<EOF
   "log-opts": {
     "max-size": "100m"
   },
+  "ipv6":true,
+  "fixed-cidr-v6":"fd00:dead:beef:c0::/80",
+  "experimental":true,
+  "ip6tables":true,
   "storage-driver": "overlay2",
   "dns": ["1.1.1.1", "1.0.0.1"]
 }
@@ -600,7 +604,7 @@ chmod 600 /etc/docker/certs.d/peer/key.pem
 chmod 600 /etc/docker/certs.d/client/key.pem
 chmod 600 /etc/ssl/private/
 
-curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
