@@ -10,7 +10,6 @@ server {
 
     location / {
         return 301 https://$host$request_uri;
-        add_header Strict-Transport-Security "max-age=31536000";
         add_header X-Content-Type-Options nosniff;
         add_header X-XSS-Protection "1; mode=block";
         add_header Referrer-Policy "no-referrer-when-downgrade";
@@ -39,7 +38,6 @@ server {
 
     location / {
          return 301 https://$host$request_uri;
-         add_header Strict-Transport-Security "max-age=31536000";
          add_header X-Content-Type-Options nosniff;
          add_header X-XSS-Protection "1; mode=block";
          add_header Referrer-Policy "no-referrer-when-downgrade";
