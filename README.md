@@ -4,7 +4,16 @@ Proxy Setup for Mailcow. Includes a simple and tested VPS deploy script that I u
 
 ## Usage
 
-Deploy a new VPS on either Vultr.com or Digital Ocean, select Ubuntu 20.0.4 LTS, choose IPv6 and User Data. Edit and copy the vps script.  Digital Ocean uses VPC private addresses and the NIC will be eth0 and eth1, while Vultr uses ens3.  Log into the new VPS and create a new user and add the user to the docker group and setup SSH keys for the new user.  Make sure to copy the /root/.docker to $HOME/.docker for the new user.
+Deploy a new VPS on either Vultr.com or Digital Ocean, select Ubuntu 20.0.4 LTS, choose IPv6 and User Data. Edit and copy the vps script.  Digital Ocean uses VPC private addresses and the NIC will be eth0 and eth1, while Vultr uses ens3.  Log into the new VPS and create a new user and add the user to the docker group and setup SSH keys for the new user.  Make sure to copy the /root/.docker to $HOME/.docker for the new user.  Follow the mailcow documents on setting up and installing mailcow.  
+
+## Nginx Proxy
+
+Install and configure Nginx and Letsencrypt.
+
+~~~bash
+sudo apt update
+sudo apt install -y nginx certbot python3-certbot python3-certbot-nginx
+```
 
 ## Advanced configuration
 
