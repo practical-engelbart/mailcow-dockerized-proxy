@@ -10,7 +10,7 @@ Deploy a new VPS on either Vultr.com or Digital Ocean, select Ubuntu 20.0.4 LTS,
 
 Install and configure Nginx and Letsencrypt.
 
-~~~bash
+```bash
 sudo apt update
 sudo apt install -y nginx certbot python3-certbot python3-certbot-nginx
 ```
