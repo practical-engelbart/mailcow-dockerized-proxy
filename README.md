@@ -8,16 +8,16 @@ Deploy a new VPS on either Vultr.com or Digital Ocean, select Ubuntu 20.0.4 LTS,
 
 ## Advanced configuration
 
-To setup the two iptables files simply use the following commands:
+To setup the two iptables files simply use the following commands (Remember to edit the rules to your environment first):
 
-```
-iptables-restore -n $HOME/mailcow-dockerized-proxy/iptables/rules4.conf
-ip6tables-restore -n $HOME/mailcow-dockerized-proxy/iptables/rules6.conf
+```bash
+sudo iptables-restore -n $HOME/mailcow-dockerized-proxy/iptables/rules4.conf
+sudo ip6tables-restore -n $HOME/mailcow-dockerized-proxy/iptables/rules6.conf
 
-iptables-save
-ip6tables-save
+sudo iptables-save
+sudo ip6tables-save
 
-apt install iptables-persistent
+sudo apt install iptables-persistent
 ```
 
 ## Letsencrypt 
