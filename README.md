@@ -19,3 +19,41 @@ ip6tables-save
 
 apt install iptables-persistent
 ```
+
+## Letsencrypt 
+
+Setup Letsencrypt and add the following to /etc/crontab.
+
+```nano
+00 21   16 *  * root    /usr/bin/certbot renew --agree-tos --email letsencrypt@example.com -n -c /etc/letsencrypt/cli.ini --deploy-hook /etc/letsencrypt/renewal-hooks/post/nginx-reload.sh
+```
+
+Example renewal script and configurations.
+
+```bash
+sudo nano /etc/letsencrypt/cli.ini
+
+max-log-backups = 0
+email = <your_email>
+domains = email.example.com, autodiscover.example.com, autoconfig.example.com, webmail.example.com, matrix.example.com, im.example.com, *.im.example.com 
+non-interactive = True
+staple-ocsp = True
+rsa-key-size = 4096
+webroot-path = /var/lib/letsencrypt/
+agree-tos = True
+```
+
+Example renewal-hooks.
+
+```bash
+sudo nano /etc/letsencrypt/renewal-hooks/post/nginx-reload.sh
+
+#!/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+cp /etc/letsencrypt/live/email.example.com/fullchain.pem /opt/mailcow-dockerized/data/assets/ssl/cert.pem
+cp /etc/letsencrypt/live/email.example.com/privkey.pem /opt/mailcow-dockerized/data/assets/ssl/key.pem
+
+/usr/sbin/nginx -t && systemctl reload nginx
+```
+
