@@ -341,8 +341,8 @@ nf_nat
 EOF
 
 cd /tmp
-wget https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.16.2.linux-amd64.tar.gz
+wget https://dl.google.com/go/go1.17.1.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.17.1.linux-amd64.tar.gz
 echo 'export GOPATH=$HOME/go' >> /etc/profile
 echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> /etc/profile
 
